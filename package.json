@@ -1,0 +1,39 @@
+{
+  "name": "@al10s/json-api",
+  "version": "0.1.0",
+  "description": "Flexible library that implements JSON:API spec",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "cover": "nyc npm run test",
+    "lint": "npm run eslint",
+    "eslint": "eslint --config .eslintrc.json .",
+    "eslint-subset": "files=$(git diff --cached --name-only | grep '.js$' | tr '\\n' ' '); bash -c \"if [[ -n \\\"$files\\\" ]]; then eslint --config .eslintrc.json --quiet $files || (exit 1); else exit 0; fi\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Al10s/json-api.git"
+  },
+  "keywords": [
+    "json:api"
+  ],
+  "pre-commit": [
+    "eslint-subset",
+    "test",
+    "cover"
+  ],
+  "author": "Antoine Lemarchand <an.lemarchand@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Al10s/json-api/issues"
+  },
+  "homepage": "https://github.com/Al10s/json-api#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.3",
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "pre-commit": "^1.2.2"
+  }
+}

@@ -1,0 +1,48 @@
+{
+    "env": {
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": "eslint:all",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "rules": {
+        "dot-location": ["off"],
+        "sort-keys": ["off"],
+        "no-underscore-dangle": ["off"],
+        "no-plusplus": ["off"],
+        "new-cap": ["off"],
+        "camelcase": ["error", { "properties": "never" }],
+        "comma-dangle": ["error", {
+            "arrays": "ignore",
+            "objects": "ignore",
+            "imports": "ignore",
+            "exports": "ignore"
+        }],
+        "no-undefined": ["off"],
+        "init-declarations": ["off"],
+        "no-ternary": ["off"],
+        "no-magic-numbers": ["off"],
+
+
+        "one-var": ["warn", "never"],
+        "padded-blocks": ["warn", "never"],
+        "object-curly-spacing": ["warn", "always"],
+        "object-property-newline": ["warn", { "allowAllPropertiesOnSameLine": true }],
+        "array-bracket-spacing": ["warn", "always", { "objectsInArrays": false }],
+        "array-bracket-newline": ["error", "consistent"],
+        "array-element-newline": ["error", "consistent"],
+        "quote-props": ["warn", "as-needed"],
+        "function-paren-newline": ["error", "consistent"],
+        "brace-style": ["error", "stroustrup"],
+        "quotes": ["error", "single"],
+        "operator-linebreak": ["warn", "after"],
+        "indent": ["error", 4, { "SwitchCase": 1 }]
+    }
+}

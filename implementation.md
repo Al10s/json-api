@@ -59,7 +59,8 @@
 <h2 id="content-negotiation"> :heavy_multiplication_x: Content Negociation</h2>
 
 ```markdown
-Servers **MUST** send all JSON:API data in response documents with the header `Content-Type: application/vnd.api+json` without any media type parameters.
+Servers **MUST** send all JSON:API data in response documents with the header
+`Content-Type: application/vnd.api+json` without any media type parameters.
 ```
 
 :heavy_multiplication_x: The response header `Content-Type` **SHOULD** be `application/vnd.api+json`.
@@ -69,18 +70,22 @@ Servers **MUST** send all JSON:API data in response documents with the header `C
 :heavy_multiplication_x: We **MAY** allow the user to change it for more flexibility.
 
 ```markdown
-Servers **MUST** respond with a `415 Unsupported Media Type` status code if a request specifies the header `Content-Type: application/vnd.api+json` with any media type parameters.
+Servers **MUST** respond with a `415 Unsupported Media Type` status code if
+a request specifies the header `Content-Type: application/vnd.api+json`
+with any media type parameters.
 ```
 
-:heavy_multiplication_x: The server **SHOULD** return a 415 error if the request specifies a `Content-Type` header other than `application/vnd.api+json`
+:heavy_multiplication_x: The server **SHOULD** respond a `415 Unsupported Media Type` status code, with an error, if the request specifies a `Content-Type` header other than `application/vnd.api+json`
 
 :heavy_multiplication_x: We **MAY** allow the user to change it for more flexibility.
 
 ```markdown
-Servers **MUST** respond with a `406 Not Acceptable` status code if a request’s `Accept` header contains the JSON:API media type and all instances of that media type are modified with media type parameters.
+Servers **MUST** respond with a `406 Not Acceptable` status code if a
+request's `Accept` header contains the JSON:API media type and all instances
+of that media type are modified with media type parameters.
 ```
 
-:heavy_multiplication_x: The server **SHOULD** return a 406 error if the request specifies an `Accept` header containing only parameterized instances of `application/vnd.api+json`.
+:heavy_multiplication_x: The server **SHOULD** respond a `406 Not Acceptable` status code, with an error, if the request specifies an `Accept` header containing only parameterized instances of `application/vnd.api+json`.
 
 :heavy_multiplication_x: The server **MAY** accept a query with another `Accept` header as long as this media type is supported (`application/json`).
 
@@ -93,9 +98,11 @@ Servers **MUST** respond with a `406 Not Acceptable` status code if a request’
 
 ```markdown
 A document **MUST** contain at least one of the following top-level members:
-* `data`: the document’s "primary data"
-* `errors`: an array of error objects
-* `meta`: a meta object that contains non-standard meta-information.
+
+* `data`: the document's "primary data"
+* `errors`: an array of [error objects](#errors)
+* `meta`: a [meta object][meta] that contains non-standard
+  meta-information.
 ```
 
 :heavy_multiplication_x: A document **MUST** contain at least one of the following top-level members:
@@ -104,16 +111,18 @@ A document **MUST** contain at least one of the following top-level members:
 * `meta`
 
 ```markdown
-The members data and errors **MUST NOT** coexist in the same document.
+The members `data` and `errors` **MUST NOT** coexist in the same document.
 ```
 
 :heavy_multiplication_x: The members `data` and `errors` **MUST NOT** coexist in the same document.
 
 ```markdown
 A document **MAY** contain any of these top-level members:
-* `jsonapi`: an object describing the server’s implementation
-* `links`: a links object related to the primary data.
-* `included`: an array of resource objects that are related to the primary data and/or each other ("included resources").
+
+* `jsonapi`: an object describing the server's implementation
+* `links`: a [links object][links] related to the primary data.
+* `included`: an array of [resource objects] that are related to the primary
+  data and/or each other ("included resources").
 ```
 
 :heavy_multiplication_x: A document **MAY** contain any of these top-level members:
@@ -122,26 +131,40 @@ A document **MAY** contain any of these top-level members:
 * `included`
 
 ```markdown
-If a document does not contain a top-level `data` key, the `included` member **MUST NOT** be present either.
+If a document does not contain a top-level `data` key, the `included` member
+**MUST NOT** be present either.
 ```
 
 :heavy_multiplication_x: A document **MUST NOT** contain a top-level `included` member if there is no `data` top-level member.
 
 ```markdown
-The top-level links object **MAY** contain the following members:
-* `self`: the link that generated the current response document.
-* `related`: a related resource link when the primary data represents a resource relationship.
-* pagination links for the primary data.
+The top-level [links object][links] **MAY** contain the following members:
+
+* `self`: the [link][links] that generated the current response document.
+* `related`: a [related resource link] when the primary data represents a
+  resource relationship.
+* [pagination] links for the primary data.
 ```
 
-:heavy_multiplication_x: The top-level links object **MAY** contain the following members: `self`, `related`, `first`, `last`, `prev`, `next`
+:heavy_multiplication_x: The top-level links object **MAY** contain the following members:
+* `self`
+* `related`
+* `first`
+* `last`
+* `prev`
+* `next`
 
 ```markdown
-The document’s “primary data” is a representation of the resource or collection of resources targeted by a request.
+The document's "primary data" is a representation of the resource or collection
+of resources targeted by a request.
 
 Primary data **MUST** be either:
-* a single resource object, a single resource identifier object, or `null`, for requests that target single resources
-* an array of resource objects, an array of resource identifier objects, or an empty array (`[]`), for requests that target resource collections
+
+* a single [resource object][resource objects], a single [resource identifier object], or `null`,
+  for requests that target single resources
+* an array of [resource objects], an array of
+  [resource identifier objects][resource identifier object], or
+  an empty array (`[]`), for requests that target resource collections
 ```
 
 :heavy_multiplication_x: For requests that target a single resource, the `data` member **MUST** contain one of the following:
@@ -159,9 +182,12 @@ Primary data **MUST** be either:
 
 ```markdown
 A resource object **MUST** contain at least the following top-level members:
+
 * `id`
 * `type`
-Exception: The `id` member is not required when the resource object originates at the client and represents a new resource to be created on the server.
+
+Exception: The `id` member is not required when the resource object originates at
+the client and represents a new resource to be created on the server.
 ```
 
 :heavy_multiplication_x: A resource object **MUST** contain a `type` member.
@@ -170,10 +196,13 @@ Exception: The `id` member is not required when the resource object originates a
 
 ```markdown
 In addition, a resource object **MAY** contain any of these top-level members:
-* `attributes`: an attributes object representing some of the resource’s data.
-* `relationships`: a relationships object describing relationships between the resource and other JSON:API resources.
-* `links`: a links object containing links related to the resource.
-* `meta`: a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.
+
+* `attributes`: an [attributes object][attributes] representing some of the resource's data.
+* `relationships`: a [relationships object][relationships] describing relationships between
+ the resource and other JSON:API resources.
+* `links`: a [links object][links] containing links related to the resource.
+* `meta`: a [meta object][meta] containing non-standard meta-information about a
+  resource that can not be represented as an attribute or relationship.
 ```
 
 :heavy_multiplication_x: A resource object **MAY** contain the following members:
@@ -185,7 +214,8 @@ In addition, a resource object **MAY** contain any of these top-level members:
 <h4 id="document-resource-object-identification"> :heavy_multiplication_x: Identification</h4>
 
 ```markdown
-Every resource object **MUST** contain an `id` member and a `type` member. The values of the `id` and `type` members **MUST** be strings.
+Every [resource object][resource objects] **MUST** contain an `id` member and a `type` member.
+The values of the `id` and `type` members **MUST** be strings.
 ```
 
 :heavy_multiplication_x: Every resource object **MUST** contain the following string members:
@@ -193,7 +223,8 @@ Every resource object **MUST** contain an `id` member and a `type` member. The v
 * `type`
 
 ```markdown
-The values of type members **MUST** adhere to the same constraints as member names.
+The values of `type` members **MUST** adhere to the same constraints as
+[member names].
 ```
 
 :heavy_multiplication_x: The `type` members have the same constraints as [member names](#document-member-names).
@@ -201,7 +232,10 @@ The values of type members **MUST** adhere to the same constraints as member nam
 <h4 id="document-resource-object-fields"> :heavy_multiplication_x: Fields</h4>
 
 ```markdown
-Fields for a resource object **MUST** share a common namespace with each other and with `type` and `id`. In other words, a resource can not have an attribute and relationship with the same name, nor can it have an attribute or relationship named `type` or `id`.
+Fields for a [resource object][resource objects] **MUST** share a common namespace with each
+other and with `type` and `id`. In other words, a resource can not have an
+attribute and relationship with the same name, nor can it have an attribute
+or relationship named `type` or `id`.
 ```
 
 :heavy_multiplication_x: An attribute or a relationship **MUST NOT** have the same name as another attribute or relationship.
@@ -213,7 +247,9 @@ Fields for a resource object **MUST** share a common namespace with each other a
 <h4 id="document-resource-object-attributes"> :heavy_multiplication_x: Attributes</h4>
 
 ```markdown
-The value of the `attributes` key **MUST** be an object (an "attributes object").
+The value of the `attributes` key **MUST** be an object (an "attributes
+object"). Members of the attributes object ("attributes") represent information
+about the [resource object][resource objects] in which it's defined.
 ```
 
 :heavy_multiplication_x: The value of the `attributes` key **MUST** be an object.
@@ -225,7 +261,10 @@ Attributes may contain any valid JSON value.
 :heavy_multiplication_x: The value of an attribute **MUST** be a valid JSON value.
 
 ```markdown
-Complex data structures involving JSON objects and arrays are allowed as attribute values. However, any object that constitutes or is contained in an attribute **MUST NOT** contain a `relationships` or `links` member, as those members are reserved by this specification for future use.
+Complex data structures involving JSON objects and arrays are allowed as
+attribute values. However, any object that constitutes or is contained in an
+attribute **MUST NOT** contain a `relationships` or `links` member, as those
+members are reserved by this specification for future use.
 ```
 
 :heavy_multiplication_x: An attribute **MUST NOT** contain the following members:
@@ -233,7 +272,9 @@ Complex data structures involving JSON objects and arrays are allowed as attribu
 * `links`
 
 ```markdown
-Although has-one foreign keys (e.g. `author_id`) are often stored internally alongside other information to be represented in a resource object, these keys **SHOULD NOT** appear as attributes.
+Although has-one foreign keys (e.g. `author_id`) are often stored internally
+alongside other information to be represented in a resource object, these keys
+**SHOULD NOT** appear as attributes.
 ```
 
 :heavy_multiplication_x: An attribute **SHOULD NOT** be an internal relationship.
@@ -241,7 +282,10 @@ Although has-one foreign keys (e.g. `author_id`) are often stored internally alo
 <h4 id="document-resource-object-relationships"> :heavy_multiplication_x: Relationships</h4>
 
 ```markdown
-The value of the `relationships` key **MUST** be an object (a "relationships object").
+The value of the `relationships` key **MUST** be an object (a "relationships
+object"). Members of the relationships object ("relationships") represent
+references from the [resource object][resource objects] in which it's defined to other resource
+objects.
 ```
 
 :heavy_multiplication_x: The value of the `relationships` key **MUST** be an object.
@@ -251,16 +295,26 @@ Relationships may be to-one or to-many.
 ```
 
 :heavy_multiplication_x: The value of the `data` member of a relationship **MUST** be one of the following:
-* :heavy_multiplication_x: A single resource identifier object
-* :heavy_multiplication_x: An array of resource identifier objects
+* :heavy_multiplication_x: `null` for empty to-one relationships.
+* :heavy_multiplication_x: An empty array (`[]`) for empty to-many relationships.
+* :heavy_multiplication_x: A single resource identifier object for non-empty to-one relationships.
+* :heavy_multiplication_x: An array of resource identifier objects for non-empty to-many relationships.
 
 ```markdown
 A "relationship object" **MUST** contain at least one of the following:
-* `links`: a links object containing at least one of the following:
-    * `self`: a link for the relationship itself (a "relationship link"). This link allows the client to directly manipulate the relationship. For example, removing an `author` through an `article`'s relationship URL would disconnect the person from the `article` without deleting the `people` resource itself. When fetched successfully, this link returns the linkage for the related resources as its primary data. (See Fetching Relationships.)
-    * `related`: a related resource link
-* `data`: resource linkage
-* `meta`: a meta object that contains non-standard meta-information about the relationship.
+
+* `links`: a [links object][links] containing at least one of the following:
+  * `self`: a link for the relationship itself (a "relationship link"). This
+    link allows the client to directly manipulate the relationship. For example,
+    removing an `author` through an `article`'s relationship URL would disconnect
+    the person from the `article` without deleting the `people` resource itself.
+    When fetched successfully, this link returns the [linkage][resource linkage]
+    for the related resources as its primary data.
+    (See [Fetching Relationships](#fetching-relationships).)
+  * `related`: a [related resource link]
+* `data`: [resource linkage]
+* `meta`: a [meta object][meta] that contains non-standard meta-information about the
+  relationship.
 ```
 
 :heavy_multiplication_x: A relationship object **MUST** contain at least one of the following members:
@@ -271,7 +325,10 @@ A "relationship object" **MUST** contain at least one of the following:
 * :heavy_multiplication_x: `meta`
 
 ```markdown
-A relationship object that represents a to-many relationship **MAY** also contain pagination links under the `links` member, as described below. Any pagination links in a relationship object **MUST** paginate the relationship data, not the related resources.
+A relationship object that represents a to-many relationship **MAY** also contain
+[pagination] links under the `links` member, as described below. Any
+[pagination] links in a relationship object **MUST** paginate the relationship
+data, not the related resources.
 ```
 
 :heavy_multiplication_x: The `links` member of a relationship object **MAY** contain all of the following members:
@@ -280,42 +337,321 @@ A relationship object that represents a to-many relationship **MAY** also contai
 * `prev`
 * `next`
 
-<h4 id="document-resource-object-related-resource-links">Related Resource Links</h4>
+<h4 id="document-resource-object-related-resource-links"> :heavy_multiplication_x: Related Resource Links</h4>
 
-<h4 id="document-resource-object-resource-linkage">Resource Linkage</h4>
+```markdown
+If present, a related resource link **MUST** reference a valid URL, even if the
+relationship isn't currently associated with any target resources. Additionally,
+a related resource link **MUST NOT** change because its relationship's content
+changes.
+```
 
-<h4 id="document-resource-object-resource-links">Resource Links</h4>
+:heavy_multiplication_x: If present, the `related` resource link **MUST** reference a valid URL.
+
+<h4 id="document-resource-object-resource-linkage"> :heavy_multiplication_x: Resource Linkage</h4>
+
+```markdown
+Resource linkage **MUST** be represented as one of the following:
+
+* `null` for empty to-one relationships.
+* an empty array (`[]`) for empty to-many relationships.
+* a single [resource identifier object] for non-empty to-one relationships.
+* an array of [resource identifier objects][resource identifier object] for non-empty to-many relationships.
+```
+
+(Probable duplicate of `Relationships may be to-one or to-many.` in [Relationships](#document-resource-object-relationships))
+
+<h4 id="document-resource-object-resource-links"> :heavy_multiplication_x: Resource Links</h4>
+
+```markdown
+The optional `links` member within each [resource object][resource objects] contains [links]
+related to the resource.
+
+If present, this links object **MAY** contain a `self` [link][links] that
+identifies the resource represented by the resource object.
+
+A server **MUST** respond to a `GET` request to the specified URL with a
+response that includes the resource as the primary data.
+```
+
+:heavy_multiplication_x: If present, the `self` member of a `links` resource **MUST** refer to an URL returning the resource data.
 
 
-<h3 id="document-resource-identifier-objects">Resource Identifier Objects</h3>
+<h3 id="document-resource-identifier-objects"> :heavy_multiplication_x: Resource Identifier Objects</h3>
+
+```markdown
+A "resource identifier object" **MUST** contain `type` and `id` members.
+```
+
+:heavy_multiplication_x: A resource identifier object **MUST** contain the following members:
+* `type`
+* `id`
+
+```markdown
+A "resource identifier object" **MAY** also include a `meta` member, whose value is a [meta] object that
+contains non-standard meta-information.
+```
+
+:heavy_multiplication_x: A resource identifier object **MAY** contain a `meta` member.
 
 
-<h3 id="document-compound-documents">Compound Documents</h3>
+<h3 id="document-compound-documents"> :heavy_multiplication_x: Compound Documents</h3>
+
+```markdown
+To reduce the number of HTTP requests, servers **MAY** allow responses that
+include related resources along with the requested primary resources. Such
+responses are called "compound documents".
+
+In a compound document, all included resources **MUST** be represented as an
+array of [resource objects] in a top-level `included` member.
+```
+
+:heavy_multiplication_x: The server **MAY** embed related resources in a top-level `included` member.
+
+```markdown
+Compound documents require "full linkage", meaning that every included
+resource **MUST** be identified by at least one [resource identifier object]
+in the same document. These resource identifier objects could either be
+primary data or represent resource linkage contained within primary or
+included resources.
+
+The only exception to the full linkage requirement is when relationship fields
+that would otherwise contain linkage data are excluded via [sparse fieldsets](#fetching-sparse-fieldsets).
+```
+
+:heavy_multiplication_x: Every resource of a compound document **MUST** be identified by at least one resource identifier object. The only exception being if the client requested [sparse fieldsets](#fetching-sparse-fieldsets).
+
+```markdown
+A [compound document] **MUST NOT** include more than one [resource object][resource objects] for
+each `type` and `id` pair.
+```
+
+:heavy_multiplication_x: Every resource of a compound document **MUST** be included only once.
 
 
-<h3 id="document-meta">Meta Information</h3>
+<h3 id="document-meta"> :heavy_multiplication_x: Meta Information</h3>
+
+```markdown
+Where specified, a `meta` member can be used to include non-standard
+meta-information. The value of each `meta` member **MUST** be an object (a
+"meta object").
+
+```
+
+:heavy_multiplication_x: The value of each `meta` member **MUST** be an object.
+
+```markdown
+Any members **MAY** be specified within `meta` objects.
+```
+
+:heavy_multiplication_x: The `meta` member object **MAY** contain any kind of fields.
 
 
-<h3 id="document-links">Links</h3>
+<h3 id="document-links"> :heavy_multiplication_x: Links</h3>
+
+```markdown
+Where specified, a `links` member can be used to represent links. The value
+of each `links` member **MUST** be an object (a "links object").
+```
+
+:heavy_multiplication_x: The value of each `links` member **MUST** be an object.
+
+```markdown
+Each member of a links object is a "link". A link **MUST** be represented as
+either:
+
+* a string containing the link's URL.
+* <a id="document-links-link-object"></a>an object ("link object") which can
+  contain the following members:
+  * `href`: a string containing the link's URL.
+  * `meta`: a meta object containing non-standard meta-information about the
+    link.
+```
+
+:heavy_multiplication_x: Each member of the `links` object **MUST** contain one of the following:
+* A string representing the URL to the link
+* An object which:
+    * **MUST** contain a `href` member (A string representing the URL to the link)
+    * **MAY** contain a `meta` object
 
 
-<h3 id="document-jsonapi-object">JSON:API Object</h3>
+<h3 id="document-jsonapi-object"> :heavy_multiplication_x: JSON:API Object</h3>
+
+```markdown
+A JSON:API document **MAY** include information about its implementation
+under a top level `jsonapi` member. If present, the value of the `jsonapi`
+member **MUST** be an object (a "jsonapi object"). The jsonapi object **MAY**
+contain a `version` member whose value is a string indicating the highest JSON
+API version supported. This object **MAY** also contain a `meta` member, whose
+value is a [meta] object that contains non-standard meta-information.
+```
+
+:heavy_multiplication_x: The top-level `jsonapi` member **MAY** be included.
+
+:heavy_multiplication_x: If included, it **MUST** be an object.
+
+:heavy_multiplication_x: This object **MAY** contain a `version` string member.
+
+:heavy_multiplication_x: This object **MAY** contain a `meta` object.
 
 
-<h3 id="document-member-names">Member Names</h3>
+<h3 id="document-member-names"> :heavy_multiplication_x: Member Names</h3>
 
-<h4 id="document-member-names-allowed-characters">Allowed Characters</h4>
+```markdown
+All member names used in a JSON:API document **MUST** be treated as case sensitive
+by clients and servers, and they **MUST** meet all of the following conditions:
 
-<h4 id="document-member-names-reserved-characters">Reserved Characters</h4>
+- Member names **MUST** contain at least one character.
+- Member names **MUST** contain only the allowed characters listed below.
+- Member names **MUST** start and end with a "globally allowed character",
+  as defined below.
+
+To enable an easy mapping of member names to URLs, it is **RECOMMENDED** that
+member names use only non-reserved, URL safe characters specified in [RFC 3986](http://tools.ietf.org/html/rfc3986#page-13).
+```
+
+:heavy_multiplication_x: Member names **MUST** contain only allowed characters.
+
+
+<h4 id="document-member-names-allowed-characters"> :heavy_multiplication_x: Allowed Characters</h4>
+
+```markdown
+The following "globally allowed characters" **MAY** be used anywhere in a member name:
+
+- U+0061 to U+007A, "a-z"
+- U+0041 to U+005A, "A-Z"
+- U+0030 to U+0039, "0-9"
+- U+0080 and above (non-ASCII Unicode characters; _not recommended, not URL safe_)
+
+Additionally, the following characters are allowed in member names, except as the
+first or last character:
+
+- U+002D HYPHEN-MINUS, "-"
+- U+005F LOW LINE, "_"
+- U+0020 SPACE, " " _(not recommended, not URL safe)_
+```
+
+:heavy_multiplication_x: Member names **MUST** contain only allowed characters (Duplicate).
+
+<h4 id="document-member-names-reserved-characters"> :heavy_multiplication_x: Reserved Characters</h4>
+
+```markdown
+The following characters **MUST NOT** be used in member names:
+
+- U+002B PLUS SIGN, "+" _(used for ordering)_
+- U+002C COMMA, "," _(used as a separator between relationship paths)_
+- U+002E PERIOD, "." _(used as a separator within relationship paths)_
+- U+005B LEFT SQUARE BRACKET, "[" _(used in sparse fieldsets)_
+- U+005D RIGHT SQUARE BRACKET, "]" _(used in sparse fieldsets)_
+- U+0021 EXCLAMATION MARK, "!"
+- U+0022 QUOTATION MARK, '"'
+- U+0023 NUMBER SIGN, "#"
+- U+0024 DOLLAR SIGN, "$"
+- U+0025 PERCENT SIGN, "%"
+- U+0026 AMPERSAND, "&"
+- U+0027 APOSTROPHE, "'"
+- U+0028 LEFT PARENTHESIS, "("
+- U+0029 RIGHT PARENTHESIS, ")"
+- U+002A ASTERISK, "&#x2a;"
+- U+002F SOLIDUS, "/"
+- U+003A COLON, ":"
+- U+003B SEMICOLON, ";"
+- U+003C LESS-THAN SIGN, "<"
+- U+003D EQUALS SIGN, "="
+- U+003E GREATER-THAN SIGN, ">"
+- U+003F QUESTION MARK, "?"
+- U+0040 COMMERCIAL AT, "@"
+- U+005C REVERSE SOLIDUS, "&#x5c;"
+- U+005E CIRCUMFLEX ACCENT, "^"
+- U+0060 GRAVE ACCENT, "&#x60;"
+- U+007B LEFT CURLY BRACKET, "{"
+- U+007C VERTICAL LINE, "&#x7c;"
+- U+007D RIGHT CURLY BRACKET, "}"
+- U+007E TILDE, "~"
+- U+007F DELETE
+- U+0000 to U+001F (C0 Controls)
+```
+
+:heavy_multiplication_x: Member names **MUST** contain only allowed characters (Duplicate).
 
 
 
-<h2 id="fetching">Fetching Data</h2>
+<h2 id="fetching"> :heavy_multiplication_x: Fetching Data</h2>
 
 
-<h3 id="fetching-resources">Fetching Resources</h3>
+<h3 id="fetching-resources"> :heavy_multiplication_x: Fetching Resources</h3>
 
-<h4 id="fetching-resources-responses">Responses</h4>
+```markdown
+A server **MUST** support fetching resource data for every URL provided as:
+
+* a `self` link as part of the top-level links object
+* a `self` link as part of a resource-level links object
+* a `related` link as part of a relationship-level links object
+```
+
+:heavy_multiplication_x: The server **MUST** respond to `GET` requests to the following URLs:
+* :heavy_multiplication_x: Collection of resources endpoint
+* :heavy_multiplication_x: Resources endpoints
+* :heavy_multiplication_x: Resource relationship endpoints
+
+<h4 id="fetching-resources-responses"> :heavy_multiplication_x: Responses</h4>
+
+##### :heavy_multiplication_x: 200 OK
+
+```markdown
+A server **MUST** respond to a successful request to fetch an individual
+resource or resource collection with a `200 OK` response.
+```
+
+:heavy_multiplication_x: The server **MUST** respond to a successful `GET` request on an individual resource or a resource collection with a `200 OK` status code.
+
+```markdown
+A server **MUST** respond to a successful request to fetch a resource
+collection with an array of [resource objects] or an empty array (`[]`) as
+the response document's primary data.
+```
+
+:heavy_multiplication_x: The server response to a successful `GET` request on a resource collection **MUST** contain an array `data` member filled with the matching resource collection.
+
+```markdown
+A server **MUST** respond to a successful request to fetch an individual
+resource with a [resource object][resource objects] or `null` provided as
+the response document's primary data.
+
+`null` is only an appropriate response when the requested URL is one that
+might correspond to a single resource, but doesn't currently.
+```
+
+:heavy_multiplication_x: The server response to a successful `GET` request on an individual resource **MUST** contain an object `data` member filled with the matching resource data.
+
+:heavy_multiplication_x: The server response to a successful `GET` request on an individual resource **MAY** contain a `data` member containing a `null` value, if there is no matching resource.
+
+:question: Personal thought :
+**Maybe** the server **SHOULD** return a `404 Not Found` error instead of a `200 OK` with a `null` value.
+It might lead to false-negative behaviors in the client, which can think that the provided URL is invalid, but it would be more correct in regards of the HTTP spec.
+There **COULD** be an option for that, to switch from the `200 OK`-`null` response by default, to a `404 Not Found`-error response for this case.
+
+##### :heavy_multiplication_x: 404 Not Found
+
+```markdown
+A server **MUST** respond with `404 Not Found` when processing a request to
+fetch a single resource that does not exist, except when the request warrants a
+`200 OK` response with `null` as the primary data (as described above).
+```
+
+:heavy_multiplication_x: The server response to a `GET` request on an individual resource that does not exist **MUST** have a `404 Not Found` status code.
+
+```markdown
+A server **MAY** respond with other HTTP status codes.
+```
+
+:heavy_multiplication_x: The server **MAY** respond to a `GET` request on an individual resource or a resource collection with other HTTP status codes.
+
+```markdown
+A server **MAY** include [error details] with error responses.
+```
+
+:heavy_multiplication_x: The server **MAY** include error details in a response to an errored `GET` request on an individual resource or a resource collection.
 
 
 <h3 id="fetching-relationships">Fetching Relationships</h3>

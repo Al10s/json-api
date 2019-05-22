@@ -58,25 +58,31 @@
 
 <h2 id="content-negotiation"> :heavy_multiplication_x: Content Negociation</h2>
 
-* `Servers MUST send all JSON:API data in response documents with the header Content-Type: application/vnd.api+json without any media type parameters.`
+```markdown
+Servers **MUST** send all JSON:API data in response documents with the header `Content-Type: application/vnd.api+json` without any media type parameters.
+```
 
- :heavy_multiplication_x: The response header `Content-Type` SHOULD be `application/vnd.api+json`.
+:heavy_multiplication_x: The response header `Content-Type` **SHOULD** be `application/vnd.api+json`.
 
- :heavy_multiplication_x: The response header `Content-Type` MAY change according to the request `Accept` header.
+:heavy_multiplication_x: The response header `Content-Type` **MAY** change according to the request `Accept` header.
 
- :heavy_multiplication_x: We MAY allow the user to change it for more flexibility.
+:heavy_multiplication_x: We **MAY** allow the user to change it for more flexibility.
 
-* `Servers MUST respond with a 415 Unsupported Media Type status code if a request specifies the header Content-Type: application/vnd.api+json with any media type parameters.`
+```markdown
+Servers **MUST** respond with a `415 Unsupported Media Type` status code if a request specifies the header `Content-Type: application/vnd.api+json` with any media type parameters.
+```
 
- :heavy_multiplication_x: The server SHOULD return a 415 error if the request specifies a `Content-Type` header other than `application/vnd.api+json`
+:heavy_multiplication_x: The server **SHOULD** return a 415 error if the request specifies a `Content-Type` header other than `application/vnd.api+json`
 
- :heavy_multiplication_x: We MAY allow the user to change it for more flexibility.
+:heavy_multiplication_x: We **MAY** allow the user to change it for more flexibility.
 
-* `Servers MUST respond with a 406 Not Acceptable status code if a request’s Accept header contains the JSON:API media type and all instances of that media type are modified with media type parameters.`
+```markdown
+Servers **MUST** respond with a `406 Not Acceptable` status code if a request’s `Accept` header contains the JSON:API media type and all instances of that media type are modified with media type parameters.
+```
 
- :heavy_multiplication_x: The server SHOULD return a 406 error if the request specifies an `Accept` header containing only parameterized instances of `application/vnd.api+json`.
+:heavy_multiplication_x: The server **SHOULD** return a 406 error if the request specifies an `Accept` header containing only parameterized instances of `application/vnd.api+json`.
 
- :heavy_multiplication_x: The server MAY accept a query with another `Accept` header as long as this media type is supported (`application/json`).
+:heavy_multiplication_x: The server **MAY** accept a query with another `Accept` header as long as this media type is supported (`application/json`).
 
 
 
@@ -85,34 +91,65 @@
 
 <h3 id="document-top-level"> :heavy_multiplication_x: Top Level</h3>
 
-* `A document MUST contain at least one of the following top-level members : data, errors, meta`
+```markdown
+A document **MUST** contain at least one of the following top-level members:
+* `data`: the document’s "primary data"
+* `errors`: an array of error objects
+* `meta`: a meta object that contains non-standard meta-information.
+```
 
- :heavy_multiplication_x: A document MUST contain at least one of the following top-level members: `data`, `errors`, `meta`
+:heavy_multiplication_x: A document **MUST** contain at least one of the following top-level members:
+* `data`
+* `errors`
+* `meta`
 
-* `The members data and errors MUST NOT coexist in the same document.`
+```markdown
+The members data and errors **MUST NOT** coexist in the same document.
+```
 
- :heavy_multiplication_x: The members `data` and `errors` MUST NOT coexist in the same document.
+:heavy_multiplication_x: The members `data` and `errors` **MUST NOT** coexist in the same document.
 
-* `A document MAY contain any of these top-level members: jsonapi, links, included.`
+```markdown
+A document **MAY** contain any of these top-level members:
+* `jsonapi`: an object describing the server’s implementation
+* `links`: a links object related to the primary data.
+* `included`: an array of resource objects that are related to the primary data and/or each other ("included resources").
+```
 
- :heavy_multiplication_x: A document MAY contain any of these top-level members: `jsonapi`, `links`, `included`.
+:heavy_multiplication_x: A document **MAY** contain any of these top-level members:
+* `jsonapi`
+* `links`
+* `included`
 
-* `If a document does not contain a top-level data key, the included member MUST NOT be present either.`
+```markdown
+If a document does not contain a top-level `data` key, the `included` member **MUST NOT** be present either.
+```
 
- :heavy_multiplication_x: A document MUST NOT contain a top-level `included` member if there is no `data` top-level member.
+:heavy_multiplication_x: A document **MUST NOT** contain a top-level `included` member if there is no `data` top-level member.
 
-* `The top-level links object MAY contain the following members: self, related, first, last, prev, next`
+```markdown
+The top-level links object **MAY** contain the following members:
+* `self`: the link that generated the current response document.
+* `related`: a related resource link when the primary data represents a resource relationship.
+* pagination links for the primary data.
+```
 
- :heavy_multiplication_x: The top-level links object MAY contain the following members: `self`, `related`, `first`, `last`, `prev`, `next`
+:heavy_multiplication_x: The top-level links object **MAY** contain the following members: `self`, `related`, `first`, `last`, `prev`, `next`
 
-* `The document’s "primary data" is a representation of the resource or collection of resources targeted by a request.`
+```markdown
+The document’s “primary data” is a representation of the resource or collection of resources targeted by a request.
 
- :heavy_multiplication_x: For requests that target a single resource, the `data` member MUST contain one of the following:
+Primary data **MUST** be either:
+* a single resource object, a single resource identifier object, or `null`, for requests that target single resources
+* an array of resource objects, an array of resource identifier objects, or an empty array (`[]`), for requests that target resource collections
+```
+
+:heavy_multiplication_x: For requests that target a single resource, the `data` member **MUST** contain one of the following:
 * :heavy_multiplication_x: A single resource object
 * :heavy_multiplication_x: A single resource identifier object
 * :heavy_multiplication_x: `null`
 
- :heavy_multiplication_x: For requests that target resource collections, the `data` member MUST contain one of the following:
+:heavy_multiplication_x: For requests that target resource collections, the `data` member **MUST** contain one of the following:
 * :heavy_multiplication_x: An array of resource objects
 * :heavy_multiplication_x: An array of resource identifier objects
 * :heavy_multiplication_x: `[]`
@@ -120,79 +157,128 @@
 
 <h3 id="document-resource-objects"> :heavy_multiplication_x: Resource Objects</h3>
 
-* `A resource object MUST contain at least the following top-level members: id, type. Exception: The id member is not required when the resource object originates at the client and represents a new resource to be created on the server.`
+```markdown
+A resource object **MUST** contain at least the following top-level members:
+* `id`
+* `type`
+Exception: The `id` member is not required when the resource object originates at the client and represents a new resource to be created on the server.
+```
 
- :heavy_multiplication_x: A resource object MUST contain a `type` member.
+:heavy_multiplication_x: A resource object **MUST** contain a `type` member.
 
- :heavy_multiplication_x: A resource object MUST contain an `id` member, except for creation requests, where it MAY contain one.
+:heavy_multiplication_x: A resource object **MUST** contain an `id` member, except for creation requests, where it **MAY** contain one.
 
-* `In addition, a resource object MAY contain any of these top-level members: attributes, relationships, links, meta`
+```markdown
+In addition, a resource object **MAY** contain any of these top-level members:
+* `attributes`: an attributes object representing some of the resource’s data.
+* `relationships`: a relationships object describing relationships between the resource and other JSON:API resources.
+* `links`: a links object containing links related to the resource.
+* `meta`: a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.
+```
 
- :heavy_multiplication_x: A resource object MAY contain the following members: `attributes`, `relationships`, `links`, `meta`
+:heavy_multiplication_x: A resource object **MAY** contain the following members:
+* `attributes`
+* `relationships`
+* `links`
+* `meta`
 
 <h4 id="document-resource-object-identification"> :heavy_multiplication_x: Identification</h4>
 
-* `Every resource object MUST contain an id member and a type member. The values of the id and type members MUST be strings.`
+```markdown
+Every resource object **MUST** contain an `id` member and a `type` member. The values of the `id` and `type` members **MUST** be strings.
+```
 
- :heavy_multiplication_x: Every resource object MUST contain the following string members : `id`, `type`.
+:heavy_multiplication_x: Every resource object **MUST** contain the following string members:
+* `id`
+* `type`
 
-* `The values of type members MUST adhere to the same constraints as member names.`
+```markdown
+The values of type members **MUST** adhere to the same constraints as member names.
+```
 
- :heavy_multiplication_x: The `type` members have the same constraints as [member names](#document-member-names).
+:heavy_multiplication_x: The `type` members have the same constraints as [member names](#document-member-names).
 
 <h4 id="document-resource-object-fields"> :heavy_multiplication_x: Fields</h4>
 
-* `Fields for a resource object MUST share a common namespace with each other and with type and id. In other words, a resource can not have an attribute and relationship with the same name, nor can it have an attribute or relationship named type or id.`
+```markdown
+Fields for a resource object **MUST** share a common namespace with each other and with `type` and `id`. In other words, a resource can not have an attribute and relationship with the same name, nor can it have an attribute or relationship named `type` or `id`.
+```
 
- :heavy_multiplication_x: An attribute or a relationship MUST NOT have the same name as another attribute or relationship.
+:heavy_multiplication_x: An attribute or a relationship **MUST NOT** have the same name as another attribute or relationship.
 
- :heavy_multiplication_x: An attribute or a relationship MUST NOT have the following names: `id`, `type`.
+:heavy_multiplication_x: An attribute or a relationship **MUST NOT** have the following names:
+* `id`
+* `type`
 
 <h4 id="document-resource-object-attributes"> :heavy_multiplication_x: Attributes</h4>
 
-* `The value of the attributes key MUST be an object (an "attributes object").`
+```markdown
+The value of the `attributes` key **MUST** be an object (an "attributes object").
+```
 
- :heavy_multiplication_x: The value of the `attributes` key MUST be an object.
+:heavy_multiplication_x: The value of the `attributes` key **MUST** be an object.
 
-* `Attributes may contain any valid JSON value.`
+```markdown
+Attributes may contain any valid JSON value.
+```
 
- :heavy_multiplication_x: The value of an attribute MUST be a valid JSON value.
+:heavy_multiplication_x: The value of an attribute **MUST** be a valid JSON value.
 
-* `Complex data structures involving JSON objects and arrays are allowed as attribute values. However, any object that constitutes or is contained in an attribute MUST NOT contain a relationships or links member, as those members are reserved by this specification for future use.`
+```markdown
+Complex data structures involving JSON objects and arrays are allowed as attribute values. However, any object that constitutes or is contained in an attribute **MUST NOT** contain a `relationships` or `links` member, as those members are reserved by this specification for future use.
+```
 
- :heavy_multiplication_x: An attribute MUST NOT contain the following members: `relationships`, `links`.
+:heavy_multiplication_x: An attribute **MUST NOT** contain the following members:
+* `relationships`
+* `links`
 
-* `Although has-one foreign keys (e.g. author_id) are often stored internally alongside other information to be represented in a resource object, these keys SHOULD NOT appear as attributes.`
+```markdown
+Although has-one foreign keys (e.g. `author_id`) are often stored internally alongside other information to be represented in a resource object, these keys **SHOULD NOT** appear as attributes.
+```
 
- :heavy_multiplication_x: An attribute MUST NOT be an internal relationship.
+:heavy_multiplication_x: An attribute **SHOULD NOT** be an internal relationship.
 
 <h4 id="document-resource-object-relationships"> :heavy_multiplication_x: Relationships</h4>
 
-* `The value of the relationships key MUST be an object (a "relationships object").`
+```markdown
+The value of the `relationships` key **MUST** be an object (a "relationships object").
+```
 
- :heavy_multiplication_x: The value of the `relationships` key MUST be an object.
+:heavy_multiplication_x: The value of the `relationships` key **MUST** be an object.
 
-* `Relationships may be to-one or to-many.`
+```markdown
+Relationships may be to-one or to-many.
+```
 
- :heavy_multiplication_x: The value of the `data` member of a relationship MUST be one of the following:
+:heavy_multiplication_x: The value of the `data` member of a relationship **MUST** be one of the following:
 * :heavy_multiplication_x: A single resource identifier object
 * :heavy_multiplication_x: An array of resource identifier objects
 
-*  `A "relationship object" MUST contain at least one of the following:`
-    * `links: a links object containing at least one of the following:`
-        * `self: a link for the relationship itself (a "relationship link"). This link allows the client to directly manipulate the relationship. For example, removing an author through an article’s relationship URL would disconnect the person from the article without deleting the people resource itself. When fetched successfully, this link returns the linkage for the related resources as its primary data. (See Fetching Relationships.)`
-        * `related: a related resource link`
-    * `data: resource linkage`
-    * `meta: a meta object that contains non-standard meta-information about the relationship.`
+```markdown
+A "relationship object" **MUST** contain at least one of the following:
+* `links`: a links object containing at least one of the following:
+    * `self`: a link for the relationship itself (a "relationship link"). This link allows the client to directly manipulate the relationship. For example, removing an `author` through an `article`'s relationship URL would disconnect the person from the `article` without deleting the `people` resource itself. When fetched successfully, this link returns the linkage for the related resources as its primary data. (See Fetching Relationships.)
+    * `related`: a related resource link
+* `data`: resource linkage
+* `meta`: a meta object that contains non-standard meta-information about the relationship.
+```
 
- :heavy_multiplication_x: A relationship object MUST contain at least one of the following members:
-*  :heavy_multiplication_x: `links`, that MUST contain at least one of the following members:
+:heavy_multiplication_x: A relationship object **MUST** contain at least one of the following members:
+*  :heavy_multiplication_x: `links`, that **MUST** contain at least one of the following members:
     * :heavy_multiplication_x: `self`
     * :heavy_multiplication_x: `related`
 * :heavy_multiplication_x: `data`
 * :heavy_multiplication_x: `meta`
 
-* `A relationship object that represents a to-many relationship MAY also contain pagination links under the links member, as described below. Any pagination links in a relationship object MUST paginate the relationship data, not the related resources.`
+```markdown
+A relationship object that represents a to-many relationship **MAY** also contain pagination links under the `links` member, as described below. Any pagination links in a relationship object **MUST** paginate the relationship data, not the related resources.
+```
+
+:heavy_multiplication_x: The `links` member of a relationship object **MAY** contain all of the following members:
+* `first`
+* `last`
+* `prev`
+* `next`
 
 <h4 id="document-resource-object-related-resource-links">Related Resource Links</h4>
 

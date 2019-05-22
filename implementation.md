@@ -108,14 +108,14 @@
 * `The document’s "primary data" is a representation of the resource or collection of resources targeted by a request.`
 
  :heavy_multiplication_x: For requests that target a single resource, the `data` member MUST contain one of the following:
-    * :heavy_multiplication_x: A single resource object
-    * :heavy_multiplication_x: A single resource identifier object
-    * :heavy_multiplication_x: `null`
+* :heavy_multiplication_x: A single resource object
+* :heavy_multiplication_x: A single resource identifier object
+* :heavy_multiplication_x: `null`
 
  :heavy_multiplication_x: For requests that target resource collections, the `data` member MUST contain one of the following:
-    * :heavy_multiplication_x: An array of resource objects
-    * :heavy_multiplication_x: An array of resource identifier objects
-    * :heavy_multiplication_x: `[]`
+* :heavy_multiplication_x: An array of resource objects
+* :heavy_multiplication_x: An array of resource identifier objects
+* :heavy_multiplication_x: `[]`
 
 
 <h3 id="document-resource-objects"> :heavy_multiplication_x: Resource Objects</h3>
@@ -175,8 +175,8 @@
 * `Relationships may be to-one or to-many.`
 
  :heavy_multiplication_x: The value of the `data` member of a relationship MUST be one of the following:
-    * :heavy_multiplication_x: A single resource identifier object
-    * :heavy_multiplication_x: An array of resource identifier objects
+* :heavy_multiplication_x: A single resource identifier object
+* :heavy_multiplication_x: An array of resource identifier objects
 
 *  `A "relationship object" MUST contain at least one of the following:`
     * `links: a links object containing at least one of the following:`
@@ -186,11 +186,11 @@
     * `meta: a meta object that contains non-standard meta-information about the relationship.`
 
  :heavy_multiplication_x: A relationship object MUST contain at least one of the following members:
-    *  :heavy_multiplication_x: `links`, that MUST contain at least one of the following members:
-        * `self`
-        * `related`
-    * :heavy_multiplication_x: `data`
-    * :heavy_multiplication_x: `meta`
+*  :heavy_multiplication_x: `links`, that MUST contain at least one of the following members:
+    * :heavy_multiplication_x: `self`
+    * :heavy_multiplication_x: `related`
+* :heavy_multiplication_x: `data`
+* :heavy_multiplication_x: `meta`
 
 * `A relationship object that represents a to-many relationship MAY also contain pagination links under the links member, as described below. Any pagination links in a relationship object MUST paginate the relationship data, not the related resources.`
 

@@ -626,11 +626,6 @@ might correspond to a single resource, but doesn't currently.
 
 :heavy_multiplication_x: The server response to a successful `GET` request on an individual resource **MAY** contain a `data` member containing a `null` value, if there is no matching resource.
 
-:question: Personal thought :
-**Maybe** the server **SHOULD** return a `404 Not Found` error instead of a `200 OK` with a `null` value.
-It might lead to false-negative behaviors in the client, which can think that the provided URL is invalid, but it would be more correct in regards of the HTTP spec.
-There **COULD** be an option for that, to switch from the `200 OK`-`null` response by default, to a `404 Not Found`-error response for this case.
-
 ##### :heavy_multiplication_x: 404 Not Found
 
 ```markdown
@@ -640,6 +635,8 @@ fetch a single resource that does not exist, except when the request warrants a
 ```
 
 :heavy_multiplication_x: The server response to a `GET` request on an individual resource that does not exist **MUST** have a `404 Not Found` status code.
+
+##### :heavy_multiplication_x: Other responses
 
 ```markdown
 A server **MAY** respond with other HTTP status codes.
@@ -654,25 +651,291 @@ A server **MAY** include [error details] with error responses.
 :heavy_multiplication_x: The server **MAY** include error details in a response to an errored `GET` request on an individual resource or a resource collection.
 
 
-<h3 id="fetching-relationships">Fetching Relationships</h3>
+<h3 id="fetching-relationships"> :heavy_multiplication_x: Fetching Relationships</h3>
 
-<h4 id="fetching-relationships-responses">Responses</h4>
+```markdown
+A server **MUST** support fetching relationship data for every relationship URL
+provided as a `self` link as part of a relationship's `links` object.
+```
+
+:heavy_multiplication_x: The server **MUST** respond to `GET` requests to the following URLs:
+* :heavy_multiplication_x: Resource relationships linkage endpoints
+
+<h4 id="fetching-relationships-responses"> :heavy_multiplication_x: Responses</h4>
+
+##### :heavy_multiplication_x: 200 OK
+
+```markdown
+A server **MUST** respond to a successful request to fetch a relationship
+with a `200 OK` response.
+```
+
+:heavy_multiplication_x: The server **MUST** respond to a successful `GET` request on a resource relationships linkage with a `200 OK` status code.
+
+```markdown
+The primary data in the response document **MUST** match the appropriate
+value for [resource linkage], as described above for
+[relationship objects][relationships].
+```
+
+:heavy_multiplication_x: The server response to a successful `GET` request on a resource relationships linkage **MUST** contain an object `data` member filled with the matching resource linkage data.
+
+```markdown
+The top-level [links object][links] **MAY** contain `self` and `related` links,
+as described above for [relationship objects][relationships].
+```
+
+:heavy_multiplication_x: The server response to a successful `GET` request on a resource relationships linkage **MAY** contain a `links` member.
+
+:question: The [Relationships Objects spec](#document-resource-object-relationships) clearly states that:
+```markdown
+A "relationship object" **MUST** contain at least one of the following:
+
+* `links`: a [links object][links] containing at least one of the following:
+    * `self` [...]
+    * `related` [...]
+```
+Therefore, it states that the `links` object **MUST** contain either `self` or `related`, in contradiction with this part of the spec that makes them optional.
+
+:heavy_multiplication_x: This `links` member **MUST** contain any of the following members:
+* `self`
+* `related`
+
+##### :heavy_multiplication_x: 404 Not Found
+
+```markdown
+A server **MUST** return `404 Not Found` when processing a request to fetch
+a relationship link URL that does not exist.
+```
+
+:heavy_multiplication_x: The server response to a `GET` request on a relationship of a resource that does not exist (either the resource or the relationship) **MUST** have a `404 Not Found` status code.
+
+##### :heavy_multiplication_x: Other responses
+
+```markdown
+A server **MAY** respond with other HTTP status codes.
+```
+
+:heavy_multiplication_x: The server **MAY** respond to a `GET` request on a relationship with other HTTP status codes.
+
+```markdown
+A server **MAY** include [error details] with error responses.
+```
+
+:heavy_multiplication_x: The server **MAY** include error details in a response to an errored `GET` request on a relationship.
 
 
-<h3 id="fetching-includes">Inclusion of Related Resources</h3>
+<h3 id="fetching-includes"> :heavy_multiplication_x: Inclusion of Related Resources</h3>
+
+```markdown
+An endpoint **MAY** return resources related to the primary data by default.
+```
+
+:heavy_multiplication_x: The server **MAY** include related resources into an `included` field by default.
+
+```markdown
+An endpoint **MAY** also support an `include` request parameter to allow the
+client to customize which related resources should be returned.
+```
+
+:heavy_multiplication_x: The server **MAY** process an `include` `GET` parameter to know which related resources should be included.
+
+```markdown
+If an endpoint does not support the `include` parameter, it **MUST** respond
+with `400 Bad Request` to any requests that include it.
+```
+
+:heavy_multiplication_x: The server **MUST** return a `400 Bad Request` response if an `include` `GET` parameter is provided, but the endpoint doesn't support it.
+
+```markdown
+If an endpoint supports the `include` parameter and a client supplies it,
+the server **MUST NOT** include unrequested [resource objects] in the `included`
+section of the [compound document].
+```
+
+:heavy_multiplication_x: The server **MUST NOT** include unrequested resources if the `include` parameter is provided.
+
+```markdown
+The value of the `include` parameter **MUST** be a comma-separated (U+002C
+COMMA, ",") list of relationship paths. A relationship path is a dot-separated
+(U+002E FULL-STOP, ".") list of [relationship][relationships] names.
+
+If a server is unable to identify a relationship path or does not support
+inclusion of resources from a path, it **MUST** respond with 400 Bad Request.
+```
+
+:heavy_multiplication_x: The server **MUST** return a `400 Bad Request` response if an `include` `GET` parameter is provided, but isn't well-formated.
+
+```markdown
+A server may choose to expose a deeply nested relationship as a direct relationship with an alias.
+```
+
+:heavy_multiplication_x: The server **MAY** allow aliases to expose deeply nested relationships as a direct relationship.
 
 
-<h3 id="fetching-sparse-fieldsets">Sparse Fieldsets</h3>
+<h3 id="fetching-sparse-fieldsets"> :heavy_multiplication_x: Sparse Fieldsets</h3>
+
+```markdown
+A client **MAY** request that an endpoint return only specific [fields] in the
+response on a per-type basis by including a `fields[TYPE]` parameter.
+
+The value of the `fields` parameter **MUST** be a comma-separated (U+002C
+COMMA, ",") list that refers to the name(s) of the fields to be returned.
+```
+
+:heavy_multiplication_x: The server **MAY** filter the requested resources fields by using the `fields` parameter.
+
+```markdown
+If a client requests a restricted set of [fields] for a given resource type,
+an endpoint **MUST NOT** include additional [fields] in resource objects of
+that type in its response.
+```
+
+:heavy_multiplication_x: The server **MUST NOT** add fields other than the ones requested for this type of resource if a `fields` parameter is provided.
 
 
-<h3 id="fetching-sorting">Sorting</h3>
+<h3 id="fetching-sorting"> :heavy_multiplication_x: Sorting</h3>
+
+```markdown
+A server **MAY** choose to support requests to sort resource collections
+according to one or more criteria ("sort fields").
+```
+
+:heavy_multiplication_x: The server **MAY** sort requested resources.
+
+```markdown
+An endpoint **MAY** support requests to sort the primary data with a `sort`
+query parameter. The value for `sort` **MUST** represent sort fields.
+```
+
+:heavy_multiplication_x: The server **MAY** support a `sort` parameter to sort requested resources. If provided, the `sort` parameter **MUST** represent the fields to sort.
+
+```markdown
+An endpoint **MAY** support multiple sort fields by allowing comma-separated
+(U+002C COMMA, ",") sort fields. Sort fields **SHOULD** be applied in the
+order specified.
+```
+
+:heavy_multiplication_x: The server **MAY** allow sorting on multiple criteria, by using a list of comma-separated fields. In this case, the sorting **SHOULD** be applied in the specified order.
+
+```markdown
+The sort order for each sort field **MUST** be ascending unless it is prefixed
+with a minus (U+002D HYPHEN-MINUS, "-"), in which case it **MUST** be descending.
+```
+
+:heavy_multiplication_x: The sort order **MUST** be ascending by default for each field, and descending if the field name is prefixed with the `-` character.
+
+```markdown
+If the server does not support sorting as specified in the query parameter
+`sort`, it **MUST** return `400 Bad Request`.
+```
+
+:heavy_multiplication_x: The server **MUST** return a `400 Bad Request` response if a `sort` `GET` parameter is provided, but the endpoint doesn't support it.
+
+```markdown
+If sorting is supported by the server and requested by the client via query
+parameter `sort`, the server **MUST** return elements of the top-level
+`data` array of the response ordered according to the criteria specified.
+```
+
+:heavy_multiplication_x: If the server supports sorting, the `data` **MUST** be sorted accordingly.
+
+```markdown
+The server **MAY** apply default sorting rules to top-level `data` if
+request parameter `sort` is not specified.
+```
+
+:heavy_multiplication_x: The server **MAY** sort data with a default rule.
 
 
-<h3 id="fetching-pagination">Pagination</h3>
+<h3 id="fetching-pagination"> :heavy_multiplication_x: Pagination</h3>
+
+```markdown
+A server **MAY** choose to limit the number of resources returned in a response
+to a subset ("page") of the whole set available.
+```
+
+:heavy_multiplication_x: The server **MAY** have a pagination strategy.
+
+```markdown
+A server **MAY** provide links to traverse a paginated data set ("pagination
+links").
+```
+
+:heavy_multiplication_x: If the server has a pagination strategy, it **MAY** provide links to traverse the data set.
+
+```markdown
+Pagination links **MUST** appear in the links object that corresponds to a
+collection. To paginate the primary data, supply pagination links in the
+top-level `links` object. To paginate an included collection returned in
+a [compound document], supply pagination links in the corresponding links
+object.
+```
+
+:heavy_multiplication_x: If provided, the pagination links **MUST** be inside the `links` field.
+
+```markdown
+The following keys **MUST** be used for pagination links:
+
+* `first`: the first page of data
+* `last`: the last page of data
+* `prev`: the previous page of data
+* `next`: the next page of data
+```
+
+:heavy_multiplication_x: The pagination links **MUST** be associated to the following keys :
+
+* `first`: the first page of data
+* `last`: the last page of data
+* `prev`: the previous page of data
+* `next`: the next page of data
+
+```markdown
+Keys **MUST** either be omitted or have a `null` value to indicate that a
+particular link is unavailable.
+```
+
+:heavy_multiplication_x: If the link is unavailable, its value **SHOULD** be `null`
+
+```markdown
+Concepts of order, as expressed in the naming of pagination links, **MUST**
+remain consistent with JSON:API's [sorting rules](#fetching-sorting).
+```
+
+:heavy_multiplication_x: Pagination links **MUST** follow the sorting rule, if any.
+
+```markdown
+The `page` query parameter is reserved for pagination. Servers and clients
+**SHOULD** use this key for pagination operations.
+```
+
+:heavy_multiplication_x: The key used for pagination **SHOULD** be `page`.
+
+```markdown
+> Note: JSON:API is agnostic about the pagination strategy used by a server.
+Effective pagination strategies include (but are not limited to):
+page-based, offset-based, and cursor-based. The `page` query parameter can
+be used as a basis for any of these strategies. For example, a page-based
+strategy might use query parameters such as `page[number]` and `page[size]`,
+an offset-based strategy might use `page[offset]` and `page[limit]`, while a
+cursor-based strategy might use `page[cursor]`.
+```
+
+:heavy_multiplication_x: The server **MAY** support the following pagination strategies :
+
+* page-based, using `page[number]` and `page[size]` parameters
+* offset-based, using `page[offset]` and `page[limit]` parameters
+* cursor-based, using `page[cursor]` parameter
 
 
-<h3 id="fetching-filtering">Filtering</h3>
+<h3 id="fetching-filtering"> :heavy_multiplication_x: Filtering</h3>
 
+```markdown
+The `filter` query parameter is reserved for filtering data. Servers and clients
+**SHOULD** use this key for filtering operations.
+```
+
+:heavy_multiplication_x: The server **SHOULD** use the `filter` parameter to filter the returned data.
 
 
 <h2 id="crud">Creating, Updating and Deleting Resources</h2>
